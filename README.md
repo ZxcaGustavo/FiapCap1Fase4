@@ -52,6 +52,64 @@ Escalabilidade: Adaptação para diferentes ambientes agrícolas com necessidade
 Análise de Dados: Registro histórico e monitoramento em tempo real para decisões baseadas em dados.
 O sistema final entrega um ambiente controlado, visualmente informativo e alinhado com as demandas reais do setor agrícola, reforçando o papel da tecnologia na modernização da agricultura.
 
+## 🔧 Como executar o código
+
+Pré-Requisitos e Instalação do Projeto: Controle de Relé com ESP32 e Sensores no Wokwi
+Para executar o projeto de controle de relé utilizando o ESP32 com sensores como DHT22 (temperatura e umidade), LDR (luminosidade) e LCD I2C (exibição de informações), você precisará configurar seu ambiente de desenvolvimento corretamente. Aqui está o guia detalhado para instalar os pré-requisitos e executar o código, utilizando Wokwi como plataforma de simulação.
+
+Fase 1: Pré-Requisitos
+1.1. Wokwi - Plataforma de Simulação
+Para testar seu código sem utilizar hardware físico, você pode usar o Wokwi, uma plataforma de simulação online que oferece suporte para microcontroladores como o ESP32.
+
+Passos para usar o Wokwi:
+
+Acesse www.wokwi.com.
+Crie uma conta se necessário ou faça login com sua conta do Google.
+Crie um novo projeto, selecionando o ESP32 como o microcontrolador desejado.
+1.2. Bibliotecas Necessárias
+Antes de executar o código no Wokwi, é necessário garantir que você tenha as bibliotecas corretas para interação com os sensores e o display LCD. O Wokwi tem suporte para várias bibliotecas comuns, como as de DHT22 e LCD I2C, mas você pode precisar usar bibliotecas personalizadas em projetos mais complexos.
+
+DHT22 Sensor: Para interagir com o sensor de temperatura e umidade.
+LiquidCrystal_I2C: Para comunicação com o display LCD via I2C.
+Wire Library: Para a comunicação I2C, já pré-configurada no Wokwi.
+Fase 2: Baixando o Código e Configurando o Wokwi
+2.1. Baixando o Código
+Se você já tem o código pronto em um repositório GitHub ou em seu computador:
+
+Repositório GitHub: Se o código estiver disponível, faça o download do arquivo .zip ou clone o repositório para seu computador.
+Editor de Código no Wokwi: Após acessar o Wokwi, você pode copiar e colar o código diretamente no editor do Wokwi.
+2.2. Configurando o Wokwi
+Acesse o Wokwi e crie um novo projeto.
+Adicione os Componentes:
+No painel esquerdo, busque os componentes e adicione-os ao seu projeto. Para esse exemplo, você precisará do ESP32, LCD I2C, DHT22, LDR, e Relé.
+Conecte os componentes conforme descrito no código:
+LCD I2C: Conecte os pinos SDA e SCL aos pinos correspondentes do ESP32.
+DHT22: Conecte o pino de dados ao pino GPIO 15.
+LDR: Conecte ao pino A0 para leitura analógica.
+Relé: Conecte ao pino GPIO 3 para controle de ativação.
+Fase 3: Testando o Código no Wokwi
+3.1. Simulando no Wokwi
+Suba o código: Copie e cole o código no editor do Wokwi.
+Inicie a simulação: Clique em Start Simulation. O Wokwi irá compilar e simular o comportamento do ESP32 com os sensores e o display LCD.
+Monitore a saída no Serial Plotter: Você pode monitorar a saída dos sensores e ver as leituras de temperatura, umidade e luminosidade diretamente na interface do Wokwi, ou utilizando o Serial Plotter para visualizar gráficos.
+3.2. Monitor Serial no Wokwi
+O Serial Monitor do Wokwi mostra a leitura de dados em tempo real. No caso do projeto de controle de relé, você verá a temperatura, umidade, valores do LDR e o estado do relé. O código já está configurado para exibir essas informações no Monitor Serial do Wokwi, onde você pode monitorar e verificar se os sensores estão funcionando corretamente.
+
+3.3. Testando a Lógica de Relé
+Relé Ligado/Desligado: O estado do relé será controlado com base nas leituras dos sensores e nos botões. Quando um valor específico for lido (como umidade baixa ou luminosidade fraca), o relé será acionado.
+A LCD I2C mostrará a temperatura e a umidade em tempo real, além do status do relé.
+Fase 4: Ajustes Finais e Validação
+4.1. Teste Final
+Antes de concluir, verifique o comportamento esperado:
+
+Os dados de temperatura e umidade devem ser atualizados no LCD e no Monitor Serial.
+A leitura do LDR e os botões devem ser refletidos no estado do relé, tanto no código quanto na simulação do Wokwi.
+4.2. Ajustes de Conexões
+Caso algum componente não esteja funcionando como esperado (por exemplo, o display LCD não mostrar os dados), revise as conexões virtuais no Wokwi, especialmente os pinos SDA e SCL do LCD, que devem estar corretamente conectados aos pinos de I2C do ESP32.
+
+Conclusão
+Com os passos descritos acima, você configurou e simulou com sucesso o controle de relé e sensores no ESP32 usando a plataforma Wokwi. Essa abordagem permite testar o código sem a necessidade de hardware físico, o que é útil para depuração e ajustes iniciais.
+
 
 
 
