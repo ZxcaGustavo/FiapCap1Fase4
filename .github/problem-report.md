@@ -13,8 +13,5 @@
 
 <br>
 
-Substitua este comentário pelo seu relatório de problema. Conte-nos o que deu errado.
-Se envolver saída do console, recorte e cole a saída neste campo (NÃO tire um instantâneo e cole a imagem.)
-Por outro lado, se o problema for com o layout visual do seu portfólio, faça um instantâneo.
-
-Por fim, não se esqueça de incluir a URL do seu repositório.
+houve um problema onde a transição do esp 32 para o arduino IDE teve um problema onde não importasse o que fizesse ele não aparecia nada.
+após algumas tentativas não houve solução possivel para que funcionasse logo preferi usar o Serial Plotter no proprio wokwi.
