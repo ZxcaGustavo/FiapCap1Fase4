@@ -111,6 +111,115 @@ Conclusão
 Com os passos descritos acima, você configurou e simulou com sucesso o controle de relé e sensores no ESP32 usando a plataforma Wokwi. Essa abordagem permite testar o código sem a necessidade de hardware físico, o que é útil para depuração e ajustes iniciais.
 
 
+Explicação da Parte Python da Atividade
+Objetivo Geral
+A parte Python da atividade serve como uma interface entre os dados coletados pelos sensores no ESP32 e o banco de dados. Ela é utilizada para realizar operações CRUD (Create, Read, Update, Delete), processar informações e permitir consultas e manipulações personalizadas. Isso possibilita um monitoramento eficiente e a integração dos dados do sistema com ferramentas analíticas ou dashboards.
+
+Pré-requisitos
+Antes de executar o código Python, certifique-se de atender aos seguintes pré-requisitos:
+
+Ambiente de Desenvolvimento Configurado:
+
+O Python deve estar instalado em sua máquina. Certifique-se de que sua versão é compatível com as bibliotecas utilizadas no projeto.
+Bibliotecas Necessárias:
+
+Você precisará de bibliotecas para conectar ao banco de dados (como MySQL Connector ou cx_Oracle).
+O ambiente também deve incluir pacotes para manipulação de dados, como pandas, caso seja necessário.
+Banco de Dados Configurado:
+
+O banco de dados deve estar configurado com a estrutura exigida pelo projeto (tabelas de sensores, histórico de irrigação etc.).
+As credenciais e endereços do servidor de banco de dados devem ser conhecidos e inseridos corretamente no script.
+Acesso ao Projeto:
+
+O código deve estar acessível em um repositório ou em sua máquina local. Certifique-se de ter baixado todos os arquivos necessários.
+Passo a Passo de Execução
+Baixe o Projeto:
+
+Acesse o repositório do projeto (por exemplo, no GitHub) e faça o download ou clone-o para sua máquina.
+Prepare o Ambiente:
+
+Certifique-se de que o Python e as bibliotecas requeridas estão instalados.
+Configure as variáveis de ambiente (se necessário), como PATH para banco de dados.
+Configure o Banco de Dados:
+
+Certifique-se de que o banco está em execução e que a estrutura necessária (tabelas, relacionamentos) já foi criada.
+Verifique se o usuário que acessará o banco possui permissões adequadas.
+Execute o Código Python:
+
+Inicie o script principal através de sua IDE ou terminal. O script geralmente oferece as seguintes funcionalidades:
+Coleta de dados do ESP32.
+Armazenamento desses dados no banco de dados.
+Visualização das informações armazenadas.
+Teste Funcionalidades:
+
+Use as opções disponíveis para verificar se os dados dos sensores estão sendo registrados corretamente no banco.
+Realize operações CRUD para garantir que as funcionalidades de atualização, leitura e exclusão também estão operando conforme esperado.
+Exemplo de Fluxo de Trabalho
+Ao iniciar o script, os dados enviados pelo ESP32 são coletados e processados.
+Esses dados são armazenados no banco de dados para criar um histórico.
+O sistema exibe as leituras em tempo real e permite gerar relatórios com base nas consultas feitas no banco.
+Justificativa
+Essa integração da parte Python é essencial para transformar os dados brutos dos sensores em informações úteis e acessíveis. Além disso, ela permite futuras expansões do sistema, como análises preditivas ou integração com plataformas de visualização, melhorando a automação e o monitoramento agrícola.
+
+Explicação da Integração do Scikit-learn e do Streamlit
+Objetivo Geral
+A integração dessas ferramentas adiciona funcionalidades de aprendizado de máquina (ML) e visualização interativa ao sistema. O Scikit-learn é usado para realizar análises preditivas ou classificações com base nos dados coletados, enquanto o Streamlit serve como interface gráfica, permitindo aos usuários interagirem com os modelos e visualizarem resultados de maneira amigável.
+
+Pré-requisitos
+Instalação das Bibliotecas Necessárias:
+
+Certifique-se de que as bibliotecas Scikit-learn e Streamlit estão instaladas:
+pip install scikit-learn streamlit
+Outras dependências importantes incluem pandas, numpy, e ferramentas de visualização como matplotlib ou seaborn, dependendo do que você deseja exibir.
+Dados Preparados no Banco:
+
+Para usar o Scikit-learn, os dados coletados pelo sistema (como leituras de sensores ou históricos de irrigação) devem ser estruturados em um formato que permita o treinamento ou inferência de modelos de ML.
+Integração do Scikit-learn
+Preparação dos Dados:
+
+Os dados do banco de dados são lidos e processados para formar datasets com variáveis explicativas (inputs, como umidade e temperatura) e uma variável alvo (output, como estado do relé: ligado/desligado).
+Normalizações ou pré-processamentos podem ser realizados com ferramentas do Scikit-learn, como StandardScaler.
+Treinamento de Modelos:
+
+Escolha um modelo apropriado (como regressão logística, árvores de decisão ou um classificador k-Nearest Neighbors) para o problema.
+Divida os dados em conjunto de treinamento e teste para avaliar o desempenho do modelo.
+Inferência Preditiva:
+
+Após o treinamento, o modelo pode ser usado para prever decisões futuras, como o acionamento de relés com base nas leituras de sensores.
+Integração do Streamlit
+Configuração do Streamlit:
+
+Um arquivo Python dedicado ao Streamlit deve ser criado para servir como interface, com um comando típico para execução:
+streamlit run app.py
+Criação da Interface:
+
+A interface permite a entrada de dados pelo usuário ou a seleção de registros do banco de dados para predições.
+Visualizações interativas, como gráficos de tendência ou heatmaps, podem ser adicionadas para analisar os resultados.
+Interatividade:
+
+O Streamlit permite criar sliders, caixas de seleção e botões que facilitam a parametrização do modelo e a exploração dos dados.
+Fluxo de Uso
+Carregar Dados:
+
+A aplicação Streamlit carrega os dados coletados do banco, processados e preparados para análise.
+Visualização Inicial:
+
+O usuário pode visualizar gráficos interativos com os dados de sensores, ajustando filtros para diferentes variáveis, como períodos ou condições específicas.
+Teste do Modelo de ML:
+
+O modelo treinado com Scikit-learn pode ser testado com entradas personalizadas no Streamlit, e os resultados são exibidos instantaneamente na interface.
+Análise de Resultados:
+
+A aplicação exibe métricas de desempenho, como acurácia, precisão ou erro médio, permitindo ao usuário avaliar a eficácia do modelo.
+Benefícios
+A combinação de Scikit-learn e Streamlit aprimora o sistema, oferecendo:
+
+Predição Automatizada: Decisões inteligentes baseadas nos dados coletados.
+Visualização Amigável: Dados e resultados de aprendizado de máquina acessíveis para não-especialistas.
+Flexibilidade: Expansão futura para novos modelos ou mais interatividade.
+Essa integração transforma o projeto em uma solução avançada e prática para a análise de dados agrícolas.
+
+
 
 
 
