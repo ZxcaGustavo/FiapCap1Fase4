@@ -1,0 +1,243 @@
+Wokwi:
+#include <DHT.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// Configuração do display LCD (endereço I2C, colunas, linhas)
+#define LCD_ADDRESS 0x27  // Verifique o endereço do seu LCD I2C se necessário
+LiquidCrystal_I2C lcd(LCD_ADDRESS, 16, 2);
+
+// Defina os pinos dos componentes
+const int relayPin = 3;       // Pino do Relé
+const int ldrPin = 0;         // Pino do LDR (analógico)
+const int dhtPin = 15;        // Pino do DHT22
+const int buttonPin1 = 14;    // Pino do primeiro botão
+const int buttonPin2 = 32;    // Pino do segundo botão
+
+// Defina o tipo do DHT22
+#define DHTTYPE DHT22
+
+DHT dht(dhtPin, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  delay(2000); // Aguarda inicialização do Monitor Serial
+  Serial.println("Inicializando sensores, relé e LCD...");
+
+  // Configuração dos pinos
+  pinMode(relayPin, OUTPUT);          // Configura o pino do relé como saída
+  pinMode(buttonPin1, INPUT_PULLUP);  // Configura o pino do botão 1 como entrada com pull-up interno
+  pinMode(buttonPin2, INPUT_PULLUP);  // Configura o pino do botão 2 como entrada com pull-up interno
+
+  // Inicializa o sensor DHT22
+  dht.begin();
+
+  // Inicializa o LCD
+  Wire.begin(17, 22);  // Configura SDA e SCL nos pinos definidos
+  lcd.init();
+  lcd.backlight();     // Ativa a luz de fundo do LCD
+  lcd.setCursor(0, 0);
+  lcd.print("Sistema Pronto!");
+  delay(2000); // Aguarda 2 segundos antes de começar o loop
+}
+
+void loop() {
+  // Leitura dos sensores
+  float temperatura = dht.readTemperature();
+  float umidade = dht.readHumidity();
+  int ldrValue = analogRead(ldrPin);
+
+  // Verificação da leitura do DHT22
+  if (isnan(temperatura) || isnan(umidade)) {
+    Serial.println("Erro ao ler o sensor DHT22.");
+    lcd.setCursor(0, 0);
+    lcd.print("Erro no DHT22");
+    lcd.setCursor(0, 1);
+    lcd.print("                ");  // Limpa linha
+  } else {
+    // Envia para o Serial Plotter com nomes de variáveis
+    Serial.print("Temperatura:");
+    Serial.print(temperatura);
+    Serial.print("\t");  // Adiciona um separador de tabulação
+
+    Serial.print("Umidade:");
+    Serial.print(umidade);
+    Serial.print("\t");  // Adiciona um separador de tabulação
+
+    // Envia também o valor do LDR
+    Serial.print("LDR:");
+    Serial.println(ldrValue);
+
+    // Exibe no LCD
+    lcd.setCursor(0, 0);
+    lcd.print("Temp: ");
+    lcd.print(temperatura);
+    lcd.print("C");
+    lcd.setCursor(0, 1);
+    lcd.print("Umid: ");
+    lcd.print(umidade);
+    lcd.print("% ");
+  }
+
+  // Leitura dos botões
+  int buttonState1 = digitalRead(buttonPin1);
+  int buttonState2 = digitalRead(buttonPin2);
+
+  if (buttonState1 == LOW) {
+    Serial.println("Botão 1 Pressionado!");
+  } else {
+    Serial.println("Botão 1 Solto.");
+  }
+
+  if (buttonState2 == LOW) {
+    Serial.println("Botão 2 Pressionado!");
+  } else {
+    Serial.println("Botão 2 Solto.");
+  }
+
+  // Controle do relé com base nas leituras
+  if (buttonState1 == LOW || buttonState2 == LOW || ldrValue < 500 || temperatura > 25 || umidade < 60) {
+    digitalWrite(relayPin, HIGH);  // Liga o relé
+    Serial.println("Relé Ligado");
+
+    // Exibe status do relé no LCD
+    lcd.setCursor(11, 1);
+    lcd.print("Lig.");
+  } else {
+    digitalWrite(relayPin, LOW);   // Desliga o relé
+    Serial.println("Relé Desligado");
+
+    // Exibe status do relé no LCD
+    lcd.setCursor(11, 1);
+    lcd.print("Des.");
+  }
+
+  delay(1000); // Aguarda 1 segundo antes de nova leitura
+}
+
+Python:
+import cx_Oracle
+import pandas as pd
+import streamlit as st
+from sklearn.ensemble import RandomForestClassifier
+import warnings
+
+# Configuração para evitar warnings desnecessários
+warnings.filterwarnings("ignore", category=UserWarning, module="sklearn")
+
+
+# Treinamento do modelo preditivo
+def treinar_modelo():
+    # Dados fictícios para treinamento
+    data = {
+        'temperatura': [20, 22, 25, 28, 30, 32, 24],
+        'umidade': [70, 65, 60, 50, 40, 30, 55],
+        'ldr': [400, 300, 200, 100, 500, 600, 450],
+        'botao1': [0, 1, 0, 1, 0, 1, 0],
+        'botao2': [0, 0, 1, 1, 0, 1, 1],
+        'irrigar': [1, 1, 1, 0, 0, 0, 1]  # 1 = Sim, 0 = Não
+    }
+    df = pd.DataFrame(data)
+
+    # Separar features (X) e target (y)
+    X = df[['temperatura', 'umidade', 'ldr', 'botao1', 'botao2']]
+    y = df['irrigar']
+
+    # Treinar o modelo
+    modelo = RandomForestClassifier(random_state=42)
+    modelo.fit(X, y)
+    return modelo
+
+
+modelo = treinar_modelo()
+
+
+# Função para conectar ao banco de dados Oracle
+def conectar_oracle():
+    try:
+        usuario = 'sys'
+        senha = 'carro'
+        dsn = cx_Oracle.makedsn("desktop-qv69de7", 1521, service_name="XE")
+        conexao = cx_Oracle.connect(user=usuario, password=senha, dsn=dsn, mode=cx_Oracle.SYSDBA)
+        return conexao
+    except cx_Oracle.DatabaseError as e:
+        st.error(f"Erro ao conectar ao banco de dados: {e}")
+        return None
+
+
+# Funções para obter dados do banco
+def consultar_historico(conexao):
+    try:
+        cursor = conexao.cursor()
+        query = "SELECT * FROM dados_sensores ORDER BY data_hora DESC"
+        cursor.execute(query)
+        resultado = cursor.fetchall()
+        colunas = [col[0] for col in cursor.description]
+        df = pd.DataFrame(resultado, columns=colunas)
+        return df
+    except cx_Oracle.Error as e:
+        st.error(f"Erro ao consultar histórico: {e}")
+        return pd.DataFrame()
+
+
+def prever_irrigacao_por_id(conexao, modelo, id_registro):
+    try:
+        cursor = conexao.cursor()
+        query = "SELECT temperatura, umidade, ldr, botao1, botao2 FROM dados_sensores WHERE id = :id"
+        cursor.execute(query, [id_registro])
+        resultado = cursor.fetchone()
+
+        if resultado:
+            # Criar um DataFrame com os dados para a predição
+            colunas = ['temperatura', 'umidade', 'ldr', 'botao1', 'botao2']
+            df_dados = pd.DataFrame([resultado], columns=colunas)
+            previsao = modelo.predict(df_dados)
+            return "Sim" if previsao[0] == 1 else "Não"
+        else:
+            st.warning("ID não encontrada no banco de dados.")
+            return None
+    except cx_Oracle.Error as e:
+        st.error(f"Erro ao prever irrigação: {e}")
+        return None
+
+
+# Streamlit App
+st.title("Dashboard de Irrigação - FarmTech Solutions")
+
+# Conexão com o banco de dados
+conexao = conectar_oracle()
+
+if conexao:
+    # Seção de Histórico de Dados
+    st.subheader("Histórico de Dados")
+    historico_df = consultar_historico(conexao)
+    if not historico_df.empty:
+        st.dataframe(historico_df)
+    else:
+        st.write("Nenhum dado disponível.")
+
+    # Previsão de Irrigação
+    st.subheader("Previsão de Irrigação")
+    id_input = st.number_input("Digite o ID para prever a irrigação:", min_value=1, step=1)
+
+    if st.button("Prever"):
+        previsao = prever_irrigacao_por_id(conexao, modelo, id_input)
+        if previsao:
+            st.success(f"Previsão de irrigação para ID {id_input}: {previsao}")
+
+    # Fechar conexão
+    conexao.close()
+else:
+    st.error("Não foi possível conectar ao banco de dados.")
+
+    oracle:
+    CREATE TABLE dados_sensores (
+    id          NUMBER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    data_hora   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    temperatura NUMBER,
+    umidade     NUMBER,
+    ldr         NUMBER,
+    botao1      NUMBER(1),  -- 0 ou 1
+    botao2      NUMBER(1),  -- 0 ou 1
+    rele        NUMBER(1)   -- 0 ou 1
+);
