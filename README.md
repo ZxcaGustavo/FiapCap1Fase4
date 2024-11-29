@@ -12,7 +12,7 @@ Automação e inteligência na FarmTech Solutions
 ## 👨‍🎓 Integrantes: 
 Gustavo Beu Gomes RM:560543
 
-## 📜 Descrição
+## 📜 Descrição e Links
 Projeto de Automação da FarmTech Solutions
 O projeto desenvolvido ao longo das fases foi concebido para criar um sistema inteligente de monitoramento e controle agrícola, integrando hardware, software e técnicas de programação para otimizar recursos hídricos e gerenciar informações críticas sobre o ambiente de cultivo. Este sistema é baseado no microcontrolador ESP32, sensores de umidade, temperatura, luminosidade (LDR), além de um relé para controle de dispositivos externos.
 
