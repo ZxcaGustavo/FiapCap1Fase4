@@ -1,3 +1,1 @@
-houve um problema onde a transição do esp 32 para o arduino IDE teve um problema onde não importasse o que fizesse ele não aparecia nada.
-após algumas tentativas não houve solução possivel para que funcionasse logo preferi usar o Serial Plotter no proprio wokwi.
-já no wokwi não houve problema real.
+
