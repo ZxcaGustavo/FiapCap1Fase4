@@ -5,4 +5,4 @@ scikit-learn==1.3.0      # Algoritmos de Machine Learning
 numpy==1.25.2            # Operações matemáticas e vetoriais
 streamlit==1.27.0        # Criação de interface gráfica para visualização
 matplotlib==3.8.1        # Visualização de dados em gráficos
-python-dotenv==1.0.0 
+
