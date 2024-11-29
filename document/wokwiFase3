@@ -1,0 +1,78 @@
+Wokwi :
+#include <DHT.h>
+
+// Defina os pinos dos componentes
+const int relayPin = 3;       // Pino do Relé
+const int ldrPin = 0;         // Pino do LDR (analógico)
+const int dhtPin = 15;         // Pino do DHT22
+const int buttonPin1 = 14;     // Pino do primeiro botão
+const int buttonPin2 = 32;     // Pino do segundo botão
+
+// Defina o tipo do DHT22
+#define DHTTYPE DHT22
+
+DHT dht(dhtPin, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);
+  delay(2000); // Aguarda inicialização do Monitor Serial
+  Serial.println("Inicializando sensores e relé...");
+
+  // Configuração dos pinos
+  pinMode(relayPin, OUTPUT);          // Configura o pino do relé como saída
+  pinMode(buttonPin1, INPUT_PULLUP);   // Configura o pino do botão 1 como entrada com pull-up interno
+  pinMode(buttonPin2, INPUT_PULLUP);   // Configura o pino do botão 2 como entrada com pull-up interno
+
+  // Inicializa o sensor DHT22
+  dht.begin();
+}
+
+void loop() {
+  // Leitura dos sensores
+  float temperatura = dht.readTemperature();
+  float umidade = dht.readHumidity();
+  int ldrValue = analogRead(ldrPin);
+
+  // Verificação da leitura do DHT22
+  if (isnan(temperatura) || isnan(umidade)) {
+    Serial.println("Erro ao ler o sensor DHT22.");
+  } else {
+    Serial.print("Temperatura: ");
+    Serial.print(temperatura);
+    Serial.println(" °C");
+    Serial.print("Umidade: ");
+    Serial.print(umidade);
+    Serial.println(" %");
+  }
+
+  // Leitura do LDR
+  Serial.print("LDR: ");
+  Serial.println(ldrValue);
+
+  // Leitura dos botões
+  int buttonState1 = digitalRead(buttonPin1);
+  int buttonState2 = digitalRead(buttonPin2);
+
+  if (buttonState1 == LOW) {
+    Serial.println("Botão 1 Pressionado!");
+  } else {
+    Serial.println("Botão 1 Solto.");
+  }
+
+  if (buttonState2 == LOW) {
+    Serial.println("Botão 2 Pressionado!");
+  } else {
+    Serial.println("Botão 2 Solto.");
+  }
+
+  // Controle do relé com base nas leituras
+  if (buttonState1 == LOW || buttonState2 == LOW || ldrValue < 500 || temperatura > 25 || umidade < 60) {
+    digitalWrite(relayPin, HIGH);  // Liga o relé
+    Serial.println("Relé Ligado");
+  } else {
+    digitalWrite(relayPin, LOW);   // Desliga o relé
+    Serial.println("Relé Desligado");
+  }
+
+  delay(1000); // Aguarda 1 segundo antes de nova leitura
+}
