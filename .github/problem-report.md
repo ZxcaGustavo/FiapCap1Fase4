@@ -5,9 +5,9 @@
     <th style="text-align: center">Resolução</th>
   </tr>
   <tr>
-    <td>Relátório de problemas</td>
-    <td>Para comunicar problemas em seu projeto</td>
-    <td>Para informar como resolver</td>
+    <td>esp</td>
+    <td>execução</td>
+    <td>sem solução aparente</td>
   </tr>
 </table>
 
